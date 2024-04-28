@@ -1,0 +1,9 @@
+name: deeplearning  # Specify the name of your virtual environment
+
+channels:
+  - defaults  # Default Anaconda channel
+  - conda-forge  # Additional channel, if needed
+
+dependencies:
+  - python=3.11  # Specify the Python version
+  - poetry=1.8.1
