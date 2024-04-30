@@ -1,15 +1,11 @@
 """File with the movies entities class"""
 
-import logging
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
 from .base_entity import BaseEntity
 from .exceptions import AssignIDError, MissingColumnsError, MissingMovieError
-
-logger = logging.getLogger(__name__)
 
 
 class Movies(BaseEntity):
@@ -54,9 +50,7 @@ class Movies(BaseEntity):
         numeric_columns = df.select_dtypes(include=["number"]).columns
         df[numeric_columns] = df[numeric_columns].fillna(0)
         self.idx = new_id
-        logger.info(
-            f"The movie '{self.name}' was added to the dataframe with id {self.idx}"
-        )
+        print(f"The movie '{self.name}' was added to the dataframe with id {self.idx}")
 
     @classmethod
     def get_from_df(
@@ -154,10 +148,10 @@ class Movies(BaseEntity):
             cls._plot_stats(filtered, gender if gender else None)
 
         else:
-            logger.error("There are no movies that match does years and genders")
+            print("There are no movies that match does years and genders")
 
     def remove_from_df(self, df):
-        """Function to delete the curring movie from a given dataframe
+        """Function to delete the curring movie from the given dataframe
 
         Parameters
         ----------
@@ -182,9 +176,7 @@ class Movies(BaseEntity):
             )
 
         df.drop(index=filtered.index, inplace=True)
-        logger.info(
-            f"The movie '{self.name}' was successfully deleted from the dataframe"
-        )
+        print(f"The movie '{self.name}' was successfully deleted from the dataframe")
 
     @staticmethod
     def _format_genders(genders: str | list) -> list:

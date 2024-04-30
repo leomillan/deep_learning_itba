@@ -11,3 +11,7 @@ class AssignIDError(Exception):
 
 class MissingMovieError(Exception):
     """Raises when the movie doesn't exist in the dataframe"""
+
+
+class MissingPersonError(Exception):
+    """Raises when the person doesn't exist in the dataframe"""
