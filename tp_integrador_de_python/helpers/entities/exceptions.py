@@ -15,3 +15,7 @@ class MissingMovieError(Exception):
 
 class MissingPersonError(Exception):
     """Raises when the person doesn't exist in the dataframe"""
+
+
+class MissingWorkerError(Exception):
+    """Raises when the worker doesn't exist in the dataframe"""

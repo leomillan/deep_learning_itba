@@ -291,6 +291,7 @@ class Movies(BaseEntity):
             int_cols.remove("id")
         else:
             int_cols = gender
+
         gender_df = pd.DataFrame(
             df[int_cols]
             .melt()

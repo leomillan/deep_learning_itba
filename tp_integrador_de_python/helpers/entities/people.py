@@ -33,7 +33,7 @@ class People(BaseEntity):
         self.idx = idx
 
     def __repr__(self) -> str:
-        """Prints movies information"""
+        """Prints people information"""
         return f"name = {self.name} \nyear = {self.year} \ngender = {self.gender} \nzipcode = {self.zipcode} \nidx = {self.idx}"
 
     def write_df(self, df: pd.DataFrame):
@@ -80,7 +80,7 @@ class People(BaseEntity):
         idx : int | list, Default None
             Index or list of index to filter.
         name : str | list, Default None
-            Movie name or list of names to filter.
+            Person name or list of names to filter.
         year : list[int], Default None
             List with two years range to filter.
         gender : str, Default None
@@ -148,12 +148,12 @@ class People(BaseEntity):
         year: list[int] = None,
         gender: str | list = None,
     ):
-        """Class method to print the stats from a movies dataframe.
+        """Class method to print the stats from a people dataframe.
 
         Parameters
         ----------
         df : pd.DataFrame
-            Pandas dataframe with movies information.
+            Pandas dataframe with people information.
         year : list[int], Default None
              List with two years range to filter.
         gender : str | list, Default None
@@ -169,7 +169,7 @@ class People(BaseEntity):
             cls._print_stats(newest, "Youngest Person")
             cls._plot_stats(filtered)
         else:
-            print("There are no movies that match does years and gender or zipcodes")
+            print("There are no people that match does years and gender or zipcodes")
 
     @classmethod
     def _plot_stats(cls, df: pd.DataFrame) -> None:
@@ -263,7 +263,7 @@ class People(BaseEntity):
         Parameters
         ----------
         df : pd.Series
-            Pandas series with the movies information
+            Pandas series with the people information
         title : str
             Title of the stats to print.
 
@@ -301,7 +301,7 @@ class People(BaseEntity):
         idx : int | list, Default None
             Index or list of index to filter.
         name : str | list, Default None
-            Movie name or list of names to filter.
+            Person name or list of names to filter.
         year : list[int], Default None
             List with two years range to filter.
         gender : str, Default None
