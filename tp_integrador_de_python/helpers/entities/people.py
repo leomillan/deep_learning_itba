@@ -1,14 +1,27 @@
 """File with the people entities class"""
 
+import geopandas as gpd
+import geoplot as gplt
+import geoplot.crs as gcrs
+import mapclassify as mc
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
+from pyzipcode import ZipCodeDatabase
 
 from .base_entity import BaseEntity
 from .exceptions import AssignIDError, MissingColumnsError, MissingPersonError
+from .utils import US_STATES
 
 
 class People(BaseEntity):
+
+    ZPDB = ZipCodeDatabase()
+    contiguous_usa = gpd.read_file(gplt.datasets.get_path("contiguous_usa"))
+    contiguous_usa["state"] = contiguous_usa["state"].apply(
+        lambda x: US_STATES.get(x, None)
+    )
 
     def __init__(
         self, name: int, year: int, gender: str, zipcode: str, idx: int = None
@@ -134,7 +147,6 @@ class People(BaseEntity):
         df: pd.DataFrame,
         year: list[int] = None,
         gender: str | list = None,
-        zipcode: str | list = None,
     ):
         """Class method to print the stats from a movies dataframe.
 
@@ -146,25 +158,21 @@ class People(BaseEntity):
              List with two years range to filter.
         gender : str | list, Default None
             Gender or list of genders to filter.
-        zipcode : int | list, Default None
-            Zipcode or list of zipcodes to filter.
         """
-        filtered = cls._filter(df, year=year, gender=gender, zipcode=zipcode)
+        filtered = cls._filter(df, year=year, gender=gender)
 
         if not filtered.empty:
-
             oldest = filtered.loc[filtered["year of birth"].idxmin()]
             cls._print_stats(oldest, "Oldest Person")
 
             newest = filtered.loc[filtered["year of birth"].idxmax()]
             cls._print_stats(newest, "Youngest Person")
             cls._plot_stats(filtered)
-
         else:
             print("There are no movies that match does years and gender or zipcodes")
 
-    @staticmethod
-    def _plot_stats(df: pd.DataFrame) -> None:
+    @classmethod
+    def _plot_stats(cls, df: pd.DataFrame) -> None:
         """Helper method to plot people dataframe stats
 
         Parameters
@@ -173,14 +181,10 @@ class People(BaseEntity):
             Pandas dataframe with the people information to be plotted.
         """
         sns.set_style("ticks")
-        fig, axes = plt.subplot_mosaic(
-            [["Year", "Year"], ["Zipcode", "Zipcode"]], figsize=(12, 8)
-        )
-
-        zipcode_df = pd.DataFrame(df.groupby("Zip Code").id.count()).reset_index()
+        # Create years bar plot.
+        fig, axes = plt.subplot_mosaic([["Year", "Year"]], figsize=(12, 8))
         year_df = pd.DataFrame(df.groupby("year of birth").id.count()).reset_index()
         year_labels = year_df["year of birth"].to_list()
-        zipcode_labels = zipcode_df["Zip Code"].to_list()
         sns.barplot(
             data=year_df,
             x="year of birth",
@@ -190,23 +194,37 @@ class People(BaseEntity):
             legend=False,
             ax=axes["Year"],
         )
-        sns.barplot(
-            data=zipcode_df,
-            x="Zip Code",
-            y="id",
-            hue="id",
-            palette="Greens_d",
-            legend=False,
-            ax=axes["Zipcode"],
-        )
         axes["Year"].set_ylabel("Frequency")
         axes["Year"].set_xlabel("Year")
         axes["Year"].set_xticks(range(len(year_labels)))  # Set the ticks
         axes["Year"].set_xticklabels(year_labels, rotation=45, ha="right")
-        axes["Zipcode"].set_ylabel("Frequency")
-        axes["Zipcode"].set_xlabel("Zipcode")
-        axes["Zipcode"].set_xticks(range(len(zipcode_labels)))  # Set the ticks
-        axes["Zipcode"].set_xticklabels(zipcode_labels, rotation=45, ha="right")
+
+        # Create choropleth plot.
+        df["state"] = df["Zip Code"].apply(
+            lambda x: cls.ZPDB[x].state if cls.ZPDB.get(x, False) else np.NaN
+        )
+        zipcode_df = pd.DataFrame(df.groupby("state").id.count()).reset_index()
+        zipcode_df = pd.merge(
+            cls.contiguous_usa, zipcode_df, on="state", how="left"
+        ).dropna()
+        if zipcode_df.id.nunique() > 5:
+            scheme = mc.FisherJenks(zipcode_df["id"], k=5)
+        else:
+            scheme = None
+
+        gplt.choropleth(
+            zipcode_df,
+            hue="id",
+            projection=gcrs.AlbersEqualArea(),
+            edgecolor="black",
+            linewidth=1,
+            cmap="YlGn",
+            legend=True,
+            scheme=scheme,
+            figsize=(12, 8),
+            legend_kwargs={"title": "Nº People"},
+        )
+
         plt.tight_layout()
         plt.show()
 
