@@ -250,7 +250,7 @@ class People(BaseEntity):
         expected_columns = ["id", "Full Name", "year of birth", "Zip Code", "Gender"]
         if set(expected_columns).issubset(df.columns):
             df.dropna(subset=expected_columns, inplace=True)
-            return df
+            return df[expected_columns]
 
         raise MissingColumnsError(
             f"One or more columns are missing from the given dataframe. Expected columns are: {expected_columns}"

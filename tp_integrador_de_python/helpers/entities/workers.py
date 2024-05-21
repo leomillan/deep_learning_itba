@@ -277,7 +277,7 @@ class Workers(BaseEntity):
         if set(expected_columns).issubset(df.columns):
             df["Start Date"] = pd.to_datetime(df["Start Date"])
             df.dropna(subset=expected_columns, inplace=True)
-            return df
+            return df[expected_columns]
 
         raise MissingColumnsError(
             f"One or more columns are missing from the given dataframe. Expected columns are: {expected_columns}"
