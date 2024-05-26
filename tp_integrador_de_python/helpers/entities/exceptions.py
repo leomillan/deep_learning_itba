@@ -23,3 +23,7 @@ class MissingWorkerError(Exception):
 
 class MissingScoreError(Exception):
     """Raises when the score doesn't exist in the dataframe"""
+
+
+class MissingUserError(Exception):
+    """Raises when the user doesn't exist in the dataframe"""

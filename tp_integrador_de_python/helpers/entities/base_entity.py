@@ -27,9 +27,6 @@ class BaseEntity(ABC):
         cls,
         df: pd.DataFrame,
         idx: int = None,
-        name: str = None,
-        year: int = None,
-        gender: str = None,
     ) -> list:
         """_summary"""
 
