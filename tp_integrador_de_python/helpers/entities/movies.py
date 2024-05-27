@@ -176,6 +176,7 @@ class Movies(BaseEntity):
             )
 
         df.drop(index=filtered.index, inplace=True)
+        self.idx = None
         print(f"The movie '{self.name}' was successfully deleted from the dataframe")
 
     @staticmethod
@@ -222,7 +223,7 @@ class Movies(BaseEntity):
         if set(expected_columns).issubset(df.columns):
             df["Release Date"] = pd.to_datetime(df["Release Date"])
             df.dropna(subset=expected_columns, inplace=True)
-            return df[expected_columns]
+            return df
 
         raise MissingColumnsError(
             f"One or more columns are missing from the given dataframe. Expected columns are: {expected_columns}"
@@ -291,7 +292,7 @@ class Movies(BaseEntity):
             int_cols.remove("id")
         else:
             int_cols = gender
-
+        df["year"] = df["Release Date"].dt.year
         gender_df = pd.DataFrame(
             df[int_cols]
             .melt()

@@ -122,6 +122,7 @@ class Users(BaseEntity):
             raise MissingUserError("The user was not found in the dataframe")
 
         df.drop(index=filtered.index, inplace=True)
+        self.idx = None
         print("The user was successfully deleted from the dataframe")
 
     @classmethod

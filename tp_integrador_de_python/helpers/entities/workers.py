@@ -138,6 +138,7 @@ class Workers(BaseEntity):
             raise MissingWorkerError("The worker was not found in the dataframe")
 
         df.drop(index=filtered.index, inplace=True)
+        self.idx = None
         print("The worker was successfully deleted from the dataframe")
 
     @classmethod
@@ -188,8 +189,8 @@ class Workers(BaseEntity):
         # Create Positions bar plot.
         fig, axes = plt.subplot_mosaic(
             [
-                ["Position", "Position", "Position", "Category", "Category"],
-                ["Position", "Position", "Position", "Year", "Year"],
+                ["Category", "Category", "Position", "Position", "Position"],
+                ["Year", "Year", "Position", "Position", "Position"],
             ],
             figsize=(12, 8),
         )
@@ -226,7 +227,7 @@ class Workers(BaseEntity):
             ax=axes["Category"],
         )
         axes["Category"].set_ylabel("Frequency")
-        axes["Category"].set_xlabel("Year")
+        axes["Category"].set_xlabel("Category")
         axes["Category"].set_xticks(range(len(category_labels)))  # Set the ticks
         axes["Category"].set_xticklabels(category_labels, rotation=45, ha="right")
 
