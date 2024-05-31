@@ -1,6 +1,6 @@
 ## Deep Learning ITBA
 
-This repository contains all the practical works from the deep learning
+This repository contains all the practical assignments from the deep learning
 course.
 
 ### Index
