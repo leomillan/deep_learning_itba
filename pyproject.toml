@@ -9,6 +9,11 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.11"
 pandas = "^2.2.2"
+matplotlib = "^3.8.4"
+seaborn = "^0.13.2"
+geoplot = "^0.5.1"
+pyzipcode = "^3.0.1"
+numba = "^0.59.1"
 
 
 [tool.poetry.group.dev.dependencies]
