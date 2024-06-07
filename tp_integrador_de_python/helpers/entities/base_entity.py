@@ -6,6 +6,14 @@ import pandas as pd
 
 
 class BaseEntity(ABC):
+    """Base class to be used for all entities classes"""
+
+    @classmethod
+    def create_df_from_csv(cls, filename: str) -> pd.DataFrame:
+        """_summary"""
+        df = pd.read_csv(filename)
+        df = cls._check_structure(df)
+        return df
 
     @abstractmethod
     def __repr__(self) -> str:
@@ -16,13 +24,7 @@ class BaseEntity(ABC):
         """_summary"""
 
     @classmethod
-    def create_df_from_csv(cls, filename: str) -> pd.DataFrame:
-        """_summary"""
-        df = pd.read_csv(filename)
-        df = cls._check_structure(df)
-        return df
-
-    @classmethod
+    @abstractmethod
     def get_from_df(
         cls,
         df: pd.DataFrame,
@@ -31,9 +33,11 @@ class BaseEntity(ABC):
         """_summary"""
 
     @classmethod
+    @abstractmethod
     def get_stats(cls, df: pd.DataFrame, year: int = None, gender: str = None):
         """_summary"""
 
+    @abstractmethod
     def remove_from_df(self, df_mov):
         """_summary"""
 
