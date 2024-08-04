@@ -1,0 +1,9 @@
+{
+  "sql": {
+    "user": "testuser",
+    "pass": "DB_PASSWORD",
+    "url": "localhost",
+    "port": 5432,
+    "database": "recomsystem"
+  }
+}
