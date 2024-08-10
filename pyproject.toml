@@ -33,6 +33,8 @@ psycopg2 = "^2.9.9"
 dependency-injector = "^4.41.0"
 flask-restx = "^1.3.0"
 python-dotenv = "^1.0.1"
+opensearch-py = "^2.6.0"
+tqdm = "^4.66.5"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.0"
