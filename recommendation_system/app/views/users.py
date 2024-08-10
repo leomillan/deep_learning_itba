@@ -1,6 +1,6 @@
-"""Module with movies endpoints"""
+"""Module with users endpoints"""
 
-from app.services.database.models import User
+from app.services.database import User
 from flask import Blueprint, current_app, request
 from flask_restx import Api, Resource
 
@@ -33,4 +33,4 @@ class AddUserService(Resource):
         user = User(**body)
         db.db_session.add(user)
         db.db_session.commit()
-        return {"msg": "user successfully added"}
+        return {"msg": "user successfully added"}, 200
