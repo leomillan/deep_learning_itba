@@ -1,9 +1,15 @@
 {
   "sql": {
     "user": "testuser",
-    "pass": "DB_PASSWORD",
+    "pass": "POSTGRES_INITIAL_ADMIN_PASSWORD",
     "url": "localhost",
     "port": 5432,
     "database": "recomsystem"
+  },
+  "elastic": {
+    "user": "admin",
+    "pass": "OPENSEARCH_INITIAL_ADMIN_PASSWORD",
+    "host": "localhost",
+    "port": 9200
   }
 }
