@@ -10,11 +10,11 @@ class VectorDBService:
 
         user = config.get("user")
         password = os.environ[config.get("pass")]
-        host = config.get("host")
+        hosts = config.get("hosts")
         port = config.get("port")
-
+        current_app.logger.info(f"{user}, {password}, {hosts}, {port}")
         self.client = OpenSearch(
-            hosts=[{"host": host, "port": port}],
+            hosts=[{"host": host, "port": port} for host in hosts],
             http_auth=(user, password),
             use_ssl=True,
             verify_certs=False,

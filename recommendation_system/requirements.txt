@@ -1,0 +1,9 @@
+tensorflow
+keras==3.4.1
+flask==3.0.3
+flask-sqlalchemy==3.1.1
+psycopg2
+dependency-injector==4.41.0
+flask-restx==1.3.0
+python-dotenv==1.0.1
+opensearch-py==2.6.0
