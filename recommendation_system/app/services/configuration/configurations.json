@@ -2,14 +2,14 @@
   "sql": {
     "user": "testuser",
     "pass": "POSTGRES_INITIAL_ADMIN_PASSWORD",
-    "url": "localhost",
+    "url": "postgres",
     "port": 5432,
     "database": "recomsystem"
   },
   "elastic": {
     "user": "admin",
     "pass": "OPENSEARCH_INITIAL_ADMIN_PASSWORD",
-    "host": "localhost",
+    "hosts": ["opensearch-node1", "opensearch-node2"],
     "port": 9200
   }
 }
