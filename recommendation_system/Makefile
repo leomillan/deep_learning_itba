@@ -14,3 +14,6 @@ logs:
 	else \
 		echo "No container found for 'web'."; \
 	fi
+
+stop:
+	docker-compose stop

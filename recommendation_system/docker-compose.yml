@@ -74,6 +74,7 @@ services:
       test: [ "CMD-SHELL", "curl -k -u admin:$OPENSEARCH_INITIAL_ADMIN_PASSWORD --silent --fail https://localhost:9200/_cluster/health || exit 1" ]
       interval: 30s
       retries: 10
+
   postgres:
     image: postgres:14-alpine
     ports:

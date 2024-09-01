@@ -10,7 +10,11 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
-    age = Column(Integer, nullable=False)
+    year_of_birth = Column(Integer, nullable=False)
+    gender = Column(String(2), nullable=False)
+    zipcode = Column(String(40), nullable=False)
+    occupation = Column(String(255), nullable=False)
+    active_since = Column(DateTime, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.now())
     rating = relationship("Rating")
 
@@ -20,6 +24,7 @@ class Movie(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String(255), nullable=False)
     name = Column(String(255), nullable=False)
+    release_date = Column(DateTime, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.now())
     rating = relationship("Rating")
 
@@ -30,6 +35,7 @@ class Rating(Base):
     movie_id = Column(Integer, ForeignKey("movies.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
     rating = Column(Float, nullable=False)
+    date = Column(DateTime, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.now())
 
 
