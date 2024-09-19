@@ -162,9 +162,14 @@ cython_debug/
 
 # MLFlow
 mlruns/
+mlartifacts/
 
 # Notebook Data
 notebooks/data
 
 # Flask App
 .flaskenv
+
+# Binaries
+*.csv
+*.png
