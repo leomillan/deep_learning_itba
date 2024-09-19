@@ -1,6 +1,6 @@
 """Module with users endpoints"""
 
-from app.services.database import User
+from core.services.database import User
 from flask import Blueprint, current_app, request
 from flask_restx import Api, Resource
 

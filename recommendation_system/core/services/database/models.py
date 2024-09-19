@@ -1,6 +1,6 @@
 import datetime
 
-from app.services.database.database_service import Base
+from core.services.database.database_service import Base
 from opensearchpy import Boolean, Date, Document, Field, Keyword, Text
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship

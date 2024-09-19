@@ -1,5 +1,5 @@
 from app.services.configuration.configuration_service import ConfigurationManager
-from app.services.database import DatabaseService, VectorDBService
+from core.services.database import DatabaseService, VectorDBService
 from dependency_injector import containers, providers
 
 
