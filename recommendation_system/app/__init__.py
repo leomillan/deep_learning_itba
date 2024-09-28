@@ -1,9 +1,9 @@
 from app.container import Container
-from app.views import movies, users
+from app.views import movies, ping, users
 from flask import Flask
 from flask.logging import default_handler
 
-ACTIVE_ENDPOINTS = (("/", users), ("/", movies))
+ACTIVE_ENDPOINTS = (("/", ping), ("/", users), ("/", movies))
 
 
 def create_app():

@@ -1,4 +1,4 @@
-from app.services.configuration.configuration_service import ConfigurationManager
+from core.services.configuration import ConfigurationManager
 from core.services.database import DatabaseService, VectorDBService
 from dependency_injector import containers, providers
 

@@ -1,9 +1,13 @@
 import datetime
 
 from core.services.database.database_service import Base
-from opensearchpy import Boolean, Date, Document, Field, Keyword, Text
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from opensearchpy import Date, Document, Field, Keyword, Text
+from sqlalchemy import ARRAY, Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+
+KNN_VECTOR_DIMENSION = (
+    5  # This Value needs to be change if the embedding model change is latent_factor
+)
 
 
 class User(Base):
@@ -15,6 +19,7 @@ class User(Base):
     zipcode = Column(String(40), nullable=False)
     occupation = Column(String(255), nullable=False)
     active_since = Column(DateTime, nullable=False)
+    embedding = Column(ARRAY(Float(50)), nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.now())
     rating = relationship("Rating")
 
@@ -25,6 +30,8 @@ class Movie(Base):
     url = Column(String(255), nullable=False)
     name = Column(String(255), nullable=False)
     release_date = Column(DateTime, nullable=False)
+    embedding = Column(ARRAY(Float(50)), nullable=True)
+    genres = Column(ARRAY(String(50)), nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.now())
     rating = relationship("Rating")
 
@@ -51,12 +58,11 @@ class VMovie(Document):
     method = {"name": "hnsw", "space_type": "cosinesimil", "engine": "nmslib"}
 
     movie_id = Keyword()
-    url = Keyword()
+    url = Text()
     name = Text()
     created_at = Date()
-    terror = Boolean()
 
-    vector = KNNVector(dimension=5, method=method)
+    vector = KNNVector(KNN_VECTOR_DIMENSION, method)
 
     class Index:
         name = "movie"
@@ -67,3 +73,24 @@ class VMovie(Document):
     def save(self, **kwargs):
         self.meta.id = self.movie_id
         return super(VMovie, self).save(**kwargs)
+
+
+class VUser(Document):
+
+    method = {"name": "hnsw", "space_type": "cosinesimil", "engine": "nmslib"}
+
+    user_id = Keyword()
+    name = Text()
+    created_at = Date()
+
+    vector = KNNVector(KNN_VECTOR_DIMENSION, method)
+
+    class Index:
+        name = "user"
+        settings = {"index": {"knn": True}}
+
+    # Redefine the save method to assign the movie_id as index instead of a custom index
+    # This approach will prevent from having duplicated movies
+    def save(self, **kwargs):
+        self.meta.id = self.user_id
+        return super(VUser, self).save(**kwargs)

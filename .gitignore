@@ -173,3 +173,5 @@ notebooks/data
 # Binaries
 *.csv
 *.png
+*.npy
+*.pkl
