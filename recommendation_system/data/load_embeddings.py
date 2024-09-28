@@ -61,11 +61,15 @@ def load_embeddings():
 
     if not elastic_client.client.indices.exists(VUser.Index.name):
         VUser.init(using=elastic_client.client)
-    logger.info("Deleting all user documents from Vector DB")
-    response = elastic_client.client.delete_by_query(
-        index=VUser.Index.name, body={"query": {"match_all": {}}}
-    )
-    logger.info(f"Total user documents deleted: {response['total']}")
+    else:
+        logger.info("Deleting all user documents from Vector DB")
+        response = elastic_client.client.delete_by_query(
+            index=VUser.Index.name, body={"query": {"match_all": {}}}
+        )
+        elastic_client.client.indices.delete(index=VUser.Index.name)
+        VUser.init(using=elastic_client.client)
+
+        logger.info(f"Total user documents deleted: {response['total']}")
 
     logger.info("Loading new User Embeddings to Vector DB")
     for i, row in tqdm(users.iterrows(), total=users.shape[0]):
@@ -79,11 +83,14 @@ def load_embeddings():
 
     if not elastic_client.client.indices.exists(VMovie.Index.name):
         VMovie.init(using=elastic_client.client)
-    logger.info("Deleting all movie documents from Vector DB")
-    response = elastic_client.client.delete_by_query(
-        index=VMovie.Index.name, body={"query": {"match_all": {}}}
-    )
-    logger.info(f"Total movie documents deleted: {response['total']}")
+    else:
+        logger.info("Deleting all movie documents from Vector DB")
+        response = elastic_client.client.delete_by_query(
+            index=VMovie.Index.name, body={"query": {"match_all": {}}}
+        )
+        elastic_client.client.indices.delete(index=VMovie.Index.name)
+        VMovie.init(using=elastic_client.client)
+        logger.info(f"Total movie documents deleted: {response['total']}")
 
     logger.info("Loading new Movie Embeddings to Vector DB")
     for i, row in tqdm(movies.iterrows(), total=movies.shape[0]):
