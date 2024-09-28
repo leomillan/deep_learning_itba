@@ -44,8 +44,13 @@ def load_data():
 
     logger.info("Loading Movies data")
     movies = pd.read_csv("peliculas.csv")
+    genres_cols = movies.select_dtypes(include=["int64"]).columns.to_list()
+    genres_cols.remove("id")  # Remove the id column to keep only genres
+    movies["genres"] = movies.apply(
+        lambda x: [col for col in genres_cols if x[col] == 1], axis=1
+    )
 
-    movies = movies[["id", "Name", "Release Date", "IMDB URL"]].rename(
+    movies = movies[["id", "Name", "Release Date", "IMDB URL", "genres"]].rename(
         columns={"Name": "name", "Release Date": "release_date", "IMDB URL": "url"}
     )
     movies["release_date"] = pd.to_datetime(movies["release_date"])

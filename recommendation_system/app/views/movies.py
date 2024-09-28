@@ -2,6 +2,7 @@
 
 from core.services.database import Movie, VMovie
 from flask import Blueprint, current_app, request
+from flask_caching import Cache
 from flask_restx import Api, Resource
 
 movies = Blueprint("movies", __name__)
@@ -12,12 +13,14 @@ api = Api(
     description="Endpoints to get Movies recommendations",
 )
 
+cache = Cache()
 
+
+@cache.cached(timeout=60)
 @api.route("/movie/<movie_id>", methods=["GET"])
 class GetUserService(Resource):
 
-    @staticmethod
-    def get(movie_id):
+    def get(self, movie_id):
         vdb = current_app.container.vector_db()
         sqldb = current_app.container.sql_db()
 
@@ -44,7 +47,12 @@ class GetUserService(Resource):
         current_app.logger.info(query)
         response = vdb.client.search(index=VMovie.Index.name, body=query)
         current_app.logger.info(response)
-        result = {"movie_id": movie.id, "name": movie.name}
+        result = {
+            "movie_id": movie.id,
+            "name": movie.name,
+            "year": movie.release_date.year,
+            "genres": movie.genres,
+        }
         if hits := response.get("hits", {}).get("hits", {}):
             recommendations = [
                 {
@@ -56,5 +64,22 @@ class GetUserService(Resource):
                 for hit in hits
                 if hit["_source"]["movie_id"] != movie.id
             ]
+            recommendations = self.get_genres(sqldb, recommendations)
+            current_app.logger.info(recommendations)
             result["recommendations"] = recommendations
             return result, 200
+
+    @staticmethod
+    def get_genres(sqldb, recommendations):
+        ids = [i["movie_id"] for i in recommendations]
+        response = (
+            sqldb.db_session.query(Movie.id, Movie.release_date, Movie.genres)
+            .filter(Movie.id.in_(ids))
+            .all()
+        )
+        response = {key: {"release_date": rd, "genres": g} for key, rd, g in response}
+        for r in recommendations:
+            r["year"] = response[r["movie_id"]]["release_date"].year
+            r["genres"] = response[r["movie_id"]]["genres"]
+        current_app.logger.info(recommendations)
+        return recommendations
