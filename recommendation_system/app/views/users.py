@@ -19,7 +19,7 @@ class GetUserService(Resource):
         db = current_app.container.sql_db()
         row = db.db_session.query(User).filter(User.name == user_name).first()
         if row:
-            return {"User name": row.name, "User age": row.age}, 200
+            return {"User name": row.name, "User id": row.id}, 200
         else:
             return {"msg": f"user {user_name} not found in the database"}, 200
 

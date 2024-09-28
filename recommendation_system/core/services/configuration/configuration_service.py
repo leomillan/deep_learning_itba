@@ -9,8 +9,6 @@ class ConfigurationManager:
 
     @staticmethod
     def init_config():
-        config_path = os.getenv(
-            "CONFIG_PATH", "services/configuration/configurations.json"
-        )
+        config_path = os.getenv("CONFIG_PATH", "conf/configurations.json")
         with open(config_path, "rb") as conf:
             return json.load(conf)

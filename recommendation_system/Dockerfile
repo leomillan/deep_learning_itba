@@ -26,7 +26,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . /app
 
 # Set environment variable for file path
-ENV CONFIG_PATH=app/services/configuration/configurations.json
+ENV CONFIG_PATH=/app/app/conf/configurations.json
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000

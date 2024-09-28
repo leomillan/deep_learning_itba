@@ -1,0 +1,10 @@
+base_model:
+  latent_factors: 5
+  epochs: 100
+  add_bias: True
+  eval_size: 0.2
+  loss: "mean_squared_error"
+  learning_rate: 0.001
+  metrics:
+    - root_mean_squared_error
+  save_embeddings: True
