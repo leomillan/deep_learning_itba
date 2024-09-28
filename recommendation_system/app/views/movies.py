@@ -21,18 +21,21 @@ class GetUserService(Resource):
         vdb = current_app.container.vector_db()
         sqldb = current_app.container.sql_db()
 
-        neighbors = request.args.get("neighbors", 20)
+        neighbors = int(request.args.get("neighbors", 20))
 
         movie = sqldb.db_session.query(Movie).filter(Movie.id == movie_id).first()
-        current_app.logger.info(movie.name)
 
+        if not movie:
+            return {"msg": f"There is no movie with ID {movie_id}"}, 200
+
+        current_app.logger.info(movie.name)
         query = {
-            "size": len(movie.embedding),
+            "size": neighbors + 1,
             "query": {
                 "knn": {
                     "vector": {
-                        "vector": [float(val) for val in movie.embedding],
-                        "k": neighbors,
+                        "vector": movie.embedding,
+                        "k": len(movie.embedding),
                     }
                 }
             },
@@ -41,15 +44,17 @@ class GetUserService(Resource):
         current_app.logger.info(query)
         response = vdb.client.search(index=VMovie.Index.name, body=query)
         current_app.logger.info(response)
+        result = {"movie_id": movie.id, "name": movie.name}
         if hits := response.get("hits", {}).get("hits", {}):
-            result = [
+            recommendations = [
                 {
                     "movie_id": hit["_source"]["movie_id"],
                     "name": hit["_source"]["name"],
                     "url": hit["_source"]["url"],
+                    "score": hit["_score"],
                 }
                 for hit in hits
+                if hit["_source"]["movie_id"] != movie.id
             ]
+            result["recommendations"] = recommendations
             return result, 200
-        else:
-            return {"msg": f"No recommendations found for {movie.name}"}, 200

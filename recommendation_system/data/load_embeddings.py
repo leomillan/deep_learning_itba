@@ -49,24 +49,24 @@ def load_embeddings():
     logger.info(f"Total documents deleted: {response['total']}")
 
     logger.info("Loading new Movie Embeddings to Vector DB")
-    dimension = movie_embeddings_matrix.shape[1]
+
     if not elastic_client.client.indices.exists(VMovie.Index.name):
         VMovie.init(using=elastic_client.client)
 
     for i, row in tqdm(movies.iterrows(), total=movies.shape[0]):
-        mv = VMovie(dimension=dimension)
-        mv.movie_id = row.id
-        mv.url = row.url
-        mv.name = row.name
-        mv.vector = list(movie_embeddings_matrix[row.movieIdx])
-        mv.created_at = datetime.now()
-
+        mv = VMovie(
+            movie_id=row["id"],
+            url=row["url"],
+            name=row["name"],
+            vector=list(movie_embeddings_matrix[row["movieIdx"]]),
+            created_at=datetime.now(),
+        )
         mv.save(using=elastic_client.client)
 
     logger.info("Updating movies embeddings in the SQL Database")
     for movie_id, idx in tqdm(movie_idx.items()):
         sql_client.db_session.query(Movie).filter(Movie.id == movie_id.item()).update(
-            {"embedding": [str(val) for val in movie_embeddings_matrix[idx].tolist()]}
+            {"embedding": movie_embeddings_matrix[idx].tolist()}
         )
 
     sql_client.db_session.commit()
