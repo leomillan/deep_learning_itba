@@ -55,10 +55,12 @@ def run(model_name: str = "base_model"):
     if not conf:
         raise Exception(f"No configs for model {model_name}")
 
+    # Get training data from DB.
     ratings, user_idx, movie_idx = get_data()
     n_users = int(ratings.user_id.nunique())
     n_movies = int(ratings.movie_id.nunique())
 
+    # Train model
     layers = do_train(
         ratings,
         n_users=n_users,
